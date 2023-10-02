@@ -70,7 +70,7 @@ export default {
       this.remarkOptions.forEach(opt=>{
         if(opt.title===this.searchRemark) {
           var obj={
-            title:this.searchRemark,
+            title:opt.title,
             content:opt.content
           }
           this.selectOptions.push(obj);
