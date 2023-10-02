@@ -7,6 +7,7 @@ import { store } from './store/store';
 Vue.config.productionTip = false
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
+Vue.prototype.EventBus = new Vue();
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'

@@ -1,14 +1,15 @@
 <template>
     <b-row>
         <b-col>
-            <b-input-group size="sm">
+            <!-- <b-input-group size="sm">
                 <b-form-input list="remarkSearch" size="sm" v-model="searchRemark2" placeholder="remark"></b-form-input>
                 <div class="datalist-container">
                     <select id="remarkSearch" class="transparent-scroll">
                         <option v-for="(opt, i) in remarkOptions2" :key="i">{{ opt.title }}</option>
                     </select>
                 </div>
-            </b-input-group>
+            </b-input-group> -->
+            <!-- <div>selectver</div> -->
         </b-col>
     </b-row>
 </template>
@@ -37,6 +38,11 @@
         ],
         };
     },
+    mounted(){
+        this.EventBus.$on('LOG_TEXT',(item)=>{
+            console.log(item)
+        })
+    }
     };
 </script>
 

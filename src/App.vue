@@ -5,7 +5,7 @@
       <!-- <router-view></router-view> --> 
       <!-- <product-list-one></product-list-one> -->
       <!-- <product-list-two></product-list-two> -->
-      <!-- <SelectVer /> -->
+      <SelectVer />
       <DatalistVer />
     </div>
   </div>
@@ -15,7 +15,7 @@
   import Header from './components/layout/Header.vue'
   // import ProductListOne from './components/ProductListOne.vue'
   // import ProductListTwo from './components/ProductListTwo.vue'
-  // import SelectVer from './components/SelectVer.vue'
+  import SelectVer from './components/SelectVer.vue'
   import DatalistVer from './components/DatalistVer.vue'
 
   export default {
@@ -25,7 +25,7 @@
       // ProductListOne,
       // ProductListTwo,
       DatalistVer,
-      // SelectVer,
+      SelectVer,
     },
     data(){
       return{
