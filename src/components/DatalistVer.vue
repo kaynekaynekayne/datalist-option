@@ -66,14 +66,16 @@ export default {
   },
   methods:{
     onInsertText:function(){
-      // remarkOptions.forEach(opt=>{
-      //   op
-      // })
-      var obj={
-        title:this.searchRemark,
-        content:'임시'
-      }
-      this.selectOptions.push(obj);
+      //인풋에 적은 값이 remarkOptions 안에 있는 값이어아햠
+      this.remarkOptions.forEach(opt=>{
+        if(opt.title===this.searchRemark) {
+          var obj={
+            title:this.searchRemark,
+            content:opt.content
+          }
+          this.selectOptions.push(obj);
+        }
+      })
       this.searchRemark="";
     },
     // logText:function(){
