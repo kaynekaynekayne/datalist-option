@@ -1,5 +1,15 @@
 <template>
   <div>
+    <!--
+      1. 엔터를 누르면 (@keyup.enter)
+      2. onEnter 뭐 이런 method 실행
+      3. method 내용: 
+      리마크코드가 저장되어 있는 배열(remarkOptions)을 forEach문 돌려서
+      그 배열 요소의 remarkcd와 input의 v-model(searchRemark)값이 같다면
+      remarkcd(리마크코드)와 text(리마크 내용) 값이 들어있는 obj를 만들어서
+      그 obj를 remarkContents 배열에 push 해주고
+      그 배열값을 v-for 돌려서 화면에 뿌림 
+    -->
 
     <b-row>
       <b-col>
