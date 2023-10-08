@@ -1,24 +1,35 @@
 <template>
   <div>
-    <!--
-      1. 엔터를 누르면 (@keyup.enter)
-      2. onEnter 뭐 이런 method 실행
-      3. method 내용: 
-      리마크코드가 저장되어 있는 배열(remarkOptions)을 forEach문 돌려서
-      그 배열 요소의 remarkcd와 input의 v-model(searchRemark)값이 같다면
-      remarkcd(리마크코드)와 text(리마크 내용) 값이 들어있는 obj를 만들어서
-      그 obj를 remarkContents 배열에 push 해주고
-      그 배열값을 v-for 돌려서 화면에 뿌림 
-    -->
-
     <b-row>
       <b-col>
+        <strong class="pt-2">종합결과코드</strong>
+      </b-col>
+      <b-col>
         <b-input-group size="sm">
-          <b-form-input @keyup.enter="onInsertText" list="remarkSearch" size="sm" v-model="searchRemark" placeholder="remark"></b-form-input>
-          <div class="datalist-container">
-            <datalist id="remarkSearch" class="transparent-scroll">
-              <option v-for="(opt, i) in remarkOptions" :key="i">{{ opt.title }}</option>
-            </datalist>
+          <b-form-input
+            size="sm"
+            placeholder="search"
+            autocomplete="off"
+            v-model="searchText"
+            @focus="onFocusDataList"
+            @blur="onFocusOutDataList"
+            @keydown.up="onKeyUp"
+            @keydown.down="onKeyDown"
+            @keyup.enter="onEnterResultCd"
+          >
+          </b-form-input>
+          <div class="searchFrame skmcSearch" v-show="inputFocus" ref="scrollCdContainer">
+            <div
+              class="dataOptions"
+              v-for="(resultItem, index) in filteredResultCdOptions"
+              :key="index"
+              :value="resultItem.text"
+              :class="{active:index===selectedCd}"
+              @click="onChangeResultCd(resultItem)"
+              ref="cdOption"
+            >
+            {{resultItem.text}}
+            </div>
           </div>
         </b-input-group>
       </b-col>
@@ -27,87 +38,137 @@
     <br>
     <br>
     <br>
-    <b-row>
-      <!-- <b-form-checkbox
-        v-model="isSelected"
-        value="Y"
-        unchecked-value="N"
-      ></b-form-checkbox> -->
-    </b-row>
-    <b-row>
-      <!--enter를 눌렀을 때 버튼 클릭과 동일한 동작 실행-->
-      <!-- <b-button @click="logText">조회</b-button>
-      <b-form-input type="text" @keyup.enter="logText"></b-form-input> -->
-    </b-row>
-    <b-row>
-      <div v-for="(opt,index) in selectOptions" :key="index">
-        <p>{{opt.title}}</p>
-        <p>{{opt.content}}</p>
-      </div>
-    </b-row>
+    <div>{{overallResultCd}}</div>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      isSelected:"Y",
-      searchRemark: "",
-      remarkOptions: [
-        { title: "aa", content:"에이에이에" },
-        { title: "bb", content:"비비비" },
-        { title: "cc", content:"씨" },
-        { title: "dd", content:"디디디" },
-        { title: "ee", content:"이이" },
-        { title: "ff", content:"에프에프에프" },
-        { title: "gg", content:"지지" },
-        { title: "hh", content:"에체체체체" },
-        { title: "ii", content:"아이ㅏ잉" },
-        { title: "jj", content:"제제" },
-        { title: "kk", content:"케이케잌" },
-        { title: "ll", content:"엘렝ㄹ" },
-        { title: "mm", content:"엠엠" },
-        { title: "nn", content:"엔엔" },
-        { title: "oo", content:"오오" },
-      ],
-      selectOptions:[],
-    };
-  },
-  methods:{
-    onInsertText:function(){
-      //인풋에 적은 값이 remarkOptions 안에 있는 값이어아햠
-      this.remarkOptions.forEach(opt=>{
-        if(opt.title===this.searchRemark) {
-          var obj={
-            title:opt.title,
-            content:opt.content
-          }
-          this.selectOptions.push(obj);
-        }
-      })
-      this.searchRemark="";
+  export default {
+    data(){
+      return {
+        searchText:"",
+        inputFocus:false,
+        selectedCd:-1,
+        overallResultCd:'00',
+        overallResultCdOptionsOrg:[],
+        overallResultCdOptions: [
+            { text: "aa", value:"aa 관한 코드" },
+            { text: "abc", value:"abc 관한 코드" },
+            { text: "azxc", value:"azxc 관한 코드" },
+            { text: "bb", value:"bb 관한 코드" },
+            { text: "cc", value:"cc 관한 코드" },
+            { text: "dd", value:"dd 관한 코드" },
+            { text: "ee", value:"ee 관한 코드" },
+            { text: "ff", value:"ff 관한 코드" },
+            { text: "gg", value:"gg 관한 코드" },
+            { text: "hh", value:"hh 관한 코드" },
+            { text: "ii", value:"ii 관한 코드" },
+            { text: "jj", value:"jj 관한 코드" },
+            { text: "kk", value:"kk 관한 코드" },
+            { text: "ll", value:"ll 관한 코드" },
+            { text: "mm", value:"mm 관한 코드" },
+            { text: "nn", value:"nn 관한 코드" },
+            { text: "oo", value:"oo 관한 코드" },
+        ],
+      }
     },
-    // logText:function(){
-    //   this.EventBus.$emit("LOG_TEXT",this.remarkOptions[0].title)
-    // }
+    computed: {
+      filteredResultCdOptions() {
+        // searchText가 포함된 항목만 필터링
+        const lowerCaseSearchText = this.searchText.toLowerCase();
+        return this.overallResultCdOptions.filter((resultItem) =>
+          resultItem.text.toLowerCase().includes(lowerCaseSearchText)
+        );
+      },
+    },
+    watch:{
+      searchText:function(newVal){
+        var self=this;
+
+        self.overallResultCdOptions.filter(function(codeItem) {          
+          return codeItem.text.substr(0, newVal.length).toLowerCase() === newVal.toLowerCase()
+        })
+
+        this.inputFocus = true
+      }
+    },
+    methods:{
+      onFocusDataList(){
+        //클릭하면 포커스 true됨
+        this.inputFocus=true
+      },
+      onFocusOutDataList(){
+        var self=this;
+        setTimeout(function(){
+          self.inputFocus=false
+        },300)
+      },
+      onKeyUp(){
+        if(this.selectedCd>0){
+          this.selectedCd--;
+          this.onScrollCdOption();
+        }
+      },
+      onKeyDown(){
+        if(this.selectedCd<this.overallResultCdOptions.length-1){
+          this.selectedCd++;
+          this.onScrollCdOption();
+        }
+      },
+      onScrollCdOption(){
+        var container=this.$refs.scrollCdContainer;
+        var option=this.$refs.cdOption[this.selectedCd];
+        if(container && option){
+          var containerRect=container.getBoundingClientRect();
+          var optionRect=option.getBoundingClientRect();
+          if(optionRect.bottom>containerRect.bottom){
+            container.scrollTop+=optionRect.bottom-containerRect.bottom;
+          } else if (optionRect.top<containerRect.top){
+            container.scrollTop-=containerRect.top-optionRect.top
+          }
+        }
+      },
+      onChangeResultCd (item) {
+        console.log(item.text,"/", item.value); //{text:"xxx", value:"xxxxxx"}
+        this.overallResultCd = item.value
+        this.searchText = item.text
+        // ipcRenderer.send(Constant.GET_SKMC_FAVORITE, JSON.stringify({resultCd: this.overallResultCd}))
+      },
+      onEnterResultCd(){
+        console.log("enter");
+        const selectedItem = this.filteredResultCdOptions[this.selectedCd];
+        console.log(selectedItem);
+        if (selectedItem) {
+          this.onChangeResultCd(selectedItem);
+        }
+        this.onFocusOutDataList()
+      }
+    }
   }
-};
 </script>
 
 <style scoped>
-.datalist-container {
-  /* 원하는 높이로 조정하세요. */
-  /* max-height: 150px;  */
-  overflow-y: auto;
-}
-
-/* <datalist> 내부 스크롤 바 스타일을 조절합니다. */
-.transparent-scroll::-webkit-scrollbar {
-  width: 18px; /* 스크롤 바의 너비를 설정하세요. */
-}
-
-.transparent-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0); /* 스크롤 바의 색상을 투명하게 만듭니다. */
-}
+  .searchFrame{
+    position: absolute;
+    background-color: white;
+    border-top: none;
+    overflow-y: scroll;
+    top: 30px;
+    padding: 15px;
+    height: 100px;
+    max-height: 200px;
+    z-index: 100;
+  }
+  
+  /* .skmcSearch{
+    width: 430px;
+  } */
+  .dataOptions,.dataRemarkOptions {
+    color: black;
+    cursor: pointer;
+    z-index: 200;
+  }
+  .dataOptions:hover, .dataOptions.active, .dataRemarkOptions.active {
+    background-color: lightblue;
+  }
 </style>
