@@ -16,6 +16,7 @@
             @keydown.up="onKeyUp"
             @keydown.down="onKeyDown"
             @keyup.enter="onEnterResultCd"
+            ref="inputField" 
           >
           </b-form-input>
           <div class="searchFrame skmcSearch" v-show="inputFocus" ref="scrollCdContainer">
@@ -71,6 +72,9 @@
             { text: "oo", value:"oo 관한 코드" },
         ],
       }
+    },
+    mounted() {
+      this.$refs.inputField.focus(); // inputField는 실제로 입력 필드의 ref로 설정된 이름으로 변경해야 합니다.
     },
     computed: {
       filteredResultCdOptions() {
@@ -135,9 +139,7 @@
         // ipcRenderer.send(Constant.GET_SKMC_FAVORITE, JSON.stringify({resultCd: this.overallResultCd}))
       },
       onEnterResultCd(){
-        console.log("enter");
         const selectedItem = this.filteredResultCdOptions[this.selectedCd];
-        console.log(selectedItem);
         if (selectedItem) {
           this.onChangeResultCd(selectedItem);
         }
