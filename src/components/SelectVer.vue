@@ -1,8 +1,11 @@
 <template>
     <b-row class="mt-2 pl-2 pr-2">
+        <b-col class="fontSize14 pt-1">
+            <div @click="onCopySize">Size</div>
+        </b-col>
         <b-col>
-            <div @click="onCopySize">{{rbcSize}}</div>
-            <div @click="onCopySize">{{rbcSize}}</div>
+            <b-form-select class="inputCustom" v-model="rbcSize" size="sm" :options="rbcSizeOptions"
+            ></b-form-select>
         </b-col>
         <b-col class="pointer pl-2 pr-2">
             <b-form-input type="text"
@@ -26,32 +29,37 @@
     export default {
         data() {
             return {
-            copied:"",
-            rbcSize:"microwave",
-            searchRemark2: "",
-            remarkContents: [
-                { title: "aa" },
-                { title: "bb" },
-                { title: "cc" },
-                { title: "dd" },
-                { title: "ee" },
-                { title: "ff" },
-                { title: "gg" },
-                { title: "hh" },
-                { title: "ii" },
-                { title: "jj" },
-                { title: "kk" },
-                { title: "ll" },
-                { title: "mm" },
-                { title: "nn" },
-                { title: "oo" },
-            ],
+                rbcSize: '01',
+                rbcSizeOptions: [
+                { value: '01', text: 'microcytic' },
+                { value: '02', text: 'normocytic' },
+                { value: '03', text: 'macrocytic' }
+                ],
+                copied:"",
+                searchRemark2: "",
+                remarkContents: [
+                    { title: "aa" },
+                    { title: "bb" },
+                    { title: "cc" },
+                    { title: "dd" },
+                    { title: "ee" },
+                    { title: "ff" },
+                    { title: "gg" },
+                    { title: "hh" },
+                    { title: "ii" },
+                    { title: "jj" },
+                    { title: "kk" },
+                    { title: "ll" },
+                    { title: "mm" },
+                    { title: "nn" },
+                    { title: "oo" },
+                ],
             };
         },
         methods:{
             onCopySize (){
-                this.copied = this.rbcSize;
                 console.log("복사")
+                this.copied = this.rbcSizeOptions.find(option => option.value === this.rbcSize).text;
             },
             onClickInput (event, index){
                 // input 요소를 클릭하고 붙여넣기를 처리
@@ -63,8 +71,8 @@
             },
             onPasteFromClipboard(event, index) {
                 if (event.ctrlKey && event.key === "v") {
-                    event.preventDefault();
                     console.log("복붙", index)
+                    event.preventDefault();
                     const newValue = this.remarkContents[index].title + " " +this.copied;
                     this.remarkContents[index].title = newValue;
                 }
