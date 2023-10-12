@@ -7,6 +7,17 @@
             <b-form-select class="inputCustom" v-model="rbcSize" size="sm" :options="rbcSizeOptions"
             ></b-form-select>
         </b-col>
+        <b-row class="mt-1">
+            <b-col class="fontSize14 pt-1">
+                <div @click="onCopyChrom">Chromicity</div>
+            </b-col>
+            <b-col>
+                <b-form-select class="inputCustom" v-model="rbcChromia" size="sm" :options="rbcChromiaOptions"></b-form-select>
+            </b-col>
+        </b-row>
+
+
+
         <b-col class="pointer pl-2 pr-2">
             <b-form-input type="text"
                 :id="'remark' + index"
@@ -17,7 +28,7 @@
                 @focus="onFocusInput($event, index)"
                 @select="onSelectText"
                 style="font-size: 12px;"
-                @keydown="onPasteFromClipboard($event, index)"
+                @keydown="onPaste($event, index)"
                 >
             </b-form-input>
         </b-col>
@@ -31,9 +42,15 @@
             return {
                 rbcSize: '01',
                 rbcSizeOptions: [
-                { value: '01', text: 'microcytic' },
-                { value: '02', text: 'normocytic' },
-                { value: '03', text: 'macrocytic' }
+                    { value: '01', text: 'microcytic' },
+                    { value: '02', text: 'normocytic' },
+                    { value: '03', text: 'macrocytic' }
+                ],
+                rbcChromia: '01',
+                rbcChromiaOptions: [
+                    { value: '01', text: 'hypochromic' },
+                    { value: '02', text: 'normochromic' },
+                    { value: '03', text: 'hyperchromic' }
                 ],
                 copied:"",
                 searchRemark2: "",
@@ -45,37 +62,31 @@
                     { title: "ee" },
                     { title: "ff" },
                     { title: "gg" },
-                    { title: "hh" },
-                    { title: "ii" },
-                    { title: "jj" },
-                    { title: "kk" },
-                    { title: "ll" },
-                    { title: "mm" },
-                    { title: "nn" },
-                    { title: "oo" },
                 ],
             };
         },
         methods:{
-            onCopySize (){
-                console.log("복사")
-                this.copied = this.rbcSizeOptions.find(option => option.value === this.rbcSize).text;
-            },
-            onClickInput (event, index){
-                // input 요소를 클릭하고 붙여넣기를 처리
-                // const inputElement = event.target;
-                // const newValue = inputElement.value + " " + this.searchRemark2;
-                // inputElement.value = newValue;
-                // this.remarkContents[index].title = newValue;
-                console.log(event, index)
-            },
-            onPasteFromClipboard(event, index) {
-                if (event.ctrlKey && event.key === "v") {
-                    console.log("복붙", index)
-                    event.preventDefault();
-                    const newValue = this.remarkContents[index].title + " " +this.copied;
-                    this.remarkContents[index].title = newValue;
+            onCopySize (evt) {
+                if (evt.ctrlKey) {
+                    console.log("복사")
+                    this.copied = this.rbcSizeOptions.find(opt => opt.value === this.rbcSize).text;
                 }
+            },
+            onCopyChrom (evt) {
+                if (evt.ctrlKey) {                  
+                    console.log("복사")
+                    this.copied = this.rbcChromiaOptions.find(opt => opt.value === this.rbcChromia).text;
+                }
+            },
+            onPaste (evt, index) {
+                if (evt.ctrlKey && evt.key === "v") {
+                    console.log("복붙", index)
+                    evt.preventDefault();
+                    this.remarkContents[index].title = this.remarkContents[index].title + " " +this.copied
+                }
+            },
+            onClickInput (){
+            
             },
             onFocusInput (){
 
