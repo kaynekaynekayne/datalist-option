@@ -24,9 +24,11 @@
             'div 안에 목록을 추가하게 만드는' input을 생성 후
             div의 세로 길이를 설정하고 overflow-y: scroll; 설정
             => 목록이 늘어날 때 스크롤이 생김
-            => 목록이 늘어날 때 마다 스크롤이 목록의 맨밑에 오게끔 설정
-            
+            => 목록이 늘어날 때 마다 스크롤이 맨밑에 오게끔 설정
+
+            widnow.scrollTo 하든가 scrollIntoView 하든가
         -->
+
         <!--리마크 선택 후 엔터로 추가-->
         <b-row>
             <b-col>
@@ -65,7 +67,7 @@
                 <b-form-input type="text"
                     :id="'remark' + index"
                     v-for="remarkItem, index in remarkContents" :key="index"
-                    v-model="remarkItem.title" @input="onChangeInput(remarkItem)"
+                    v-model="remarkItem.text" @input="onChangeInput(remarkItem)"
                     size="sm"
                     @keyup="onClickInput($event, index)"
                     @focus="onFocusInput($event, index)"
@@ -162,7 +164,7 @@
                 if (evt.ctrlKey && evt.key === "v") {
                     console.log("복붙", index)
                     evt.preventDefault();
-                    this.remarkContents[index].title = this.remarkContents[index].title + " " +this.copied
+                    this.remarkContents[index].text = this.remarkContents[index].text + " " +this.copied
                 }
             },
             onClickInput (){
